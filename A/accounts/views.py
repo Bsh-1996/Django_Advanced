@@ -1,18 +1,21 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from .forms import UserRegistrationForm, VerifyCodeForm
+from .forms import UserRegistrationForm, VerifyCodeForm, UserLoginForm
 import random
 from utils import send_otp_code
 from .models import OtpCode, User
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import login, logout, authenticate
 
 # Create your views here.
 
 class UserRegisterView(View):
     form_class = UserRegistrationForm
+    template_name = 'accounts/register.html'
     def get(self, request):
         form = self.form_class
-        return render(request, 'accounts/register.html', {'form': form})
+        return render(request, self.template_name, {'form': form})
 
 
     def post(self, request):
@@ -32,7 +35,7 @@ class UserRegisterView(View):
             }
             messages.success(request, 'we sent you code', 'success')
             return redirect('accounts:verify_code')
-        return redirect('home:home')
+        return render(request, self.template_name, {'form': form})
             
 
 
@@ -66,3 +69,4 @@ class UserRegisterVerifyCodeView(View):
                 return redirect('accounts:verify_code')
         return redirect('home:home')
             
+
