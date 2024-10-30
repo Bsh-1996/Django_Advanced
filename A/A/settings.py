@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home.apps.HomeConfig',
     'accounts.apps.AccountsConfig',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -139,4 +140,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 AUTH_USER_MODEL = "accounts.User"
+
+
+
+# arvan cloud storage
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3.S3Storage"
+
+AWS_ACCESS_KEY_ID = 'df5738ad-3bb2-4548-83ba-5a3e36b1582f'
+
+AWS_SECRET_ACCESS_KEY = '8e57f546f591ae3ed16c9b7583f10c16f5454edca9fd44f2f04ca2794999a90b'
+
+AWS_S3_ENDPOINT_URL = 'http://s3.ir-thr-at1.arvanstorage.ir'
+
+AWS_STORAGE_BUCKET_NAME = 'django1-shopping'
+
+AWS_SERVICE_NAME = 's3'
+
+AWS_S3_FILE_OVERWRITE = False
 
