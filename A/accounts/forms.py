@@ -1,5 +1,5 @@
 from django import forms
-from . models import User
+from . models import User, OtpCode
 from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -58,6 +58,7 @@ class UserRegistrationForm(forms.Form):
         user = User.objects.filter(phone_number=phone).exists()
         if user:
             raise ValidationError('this phone number already exists')
+        OtpCode.objects.filter(phone_number = phone).delete()
         return phone
 
 
