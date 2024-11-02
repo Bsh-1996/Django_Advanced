@@ -10,7 +10,8 @@ from . forms import CartAddForm
 
 class CartView(View):
     def get(self, request):
-        return render(request, 'orders/cart.html')
+        cart = Cart(request)
+        return render(request, 'orders/cart.html', {'cart': cart})
     
 class CartAddView(View):
     def post(self, request, product_id):
@@ -21,4 +22,4 @@ class CartAddView(View):
             cd = form.cleaned_data
             cart.add(product, cd['quantity'])
         return redirect('orders:cart')
-        
+
