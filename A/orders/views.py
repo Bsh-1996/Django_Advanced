@@ -3,12 +3,14 @@ from django.views import View
 from . cart import Cart
 from django.shortcuts import get_object_or_404
 from home.models import Product
-from . forms import CartAddForm
+from . forms import CartAddForm, CoupanApplyForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from . models import Order, OrderItem
+from . models import Order, OrderItem, Coupan
 import requests
 import json
 from django.http import HttpResponse
+import datetime
+from django.contrib import messages
 # Create your views here.
 
 
@@ -37,9 +39,11 @@ class CartRemoveView(View):
     
 
 class OrderDetailView(LoginRequiredMixin, View):
+    form_class = CoupanApplyForm
+
     def get(self, request, order_id):
         order = get_object_or_404(Order, id = order_id)
-        return render(request, 'orders/order_detail.html', {'order': order})
+        return render(request, 'orders/order_detail.html', {'order': order, 'form': self.form_class})
 
 class OrderCreateView(LoginRequiredMixin, View):
     def get(self, request):
@@ -128,3 +132,21 @@ class OrderVerifyView(LoginRequiredMixin, View):
         else:
             return HttpResponse('Transaction filed or cancelde by user')
         
+
+class CoupanaApplyView(LoginRequiredMixin, View):
+    form_class = CoupanApplyForm
+    def post(self, request, order_id):
+        now = datetime.datetime.now()
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            code = form.cleaned_data['code']
+            try:
+                coupan = Coupan.objects.get(code__exact = code, valid_from__lte = now, valid_to__gte = now, active = True)
+            except Coupan.DoesNotExist:
+                messages.error(request, 'this coupan does not exist')
+                return redirect('orders:order_detail', order_id)
+            order = Order.objects.get(id = order_id)
+            order.discount = coupan.discount
+            order.save()
+            return redirect('orders:order_detail', order_id)
+

@@ -7,5 +7,11 @@
     <h3>Chceckout</h3>
     <p>Total: {{ order.get_total_price }}</p>
     <a href="{% url 'orders:order_pay' order.id %}" class="btn btn-primary">Pay</a>
+    <hr><br><br>
+    <form action="{% url 'orders:apply_coupan' order.id %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Apply">
 
+    </form>
 {% endblock %}
