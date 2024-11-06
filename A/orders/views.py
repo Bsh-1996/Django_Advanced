@@ -143,7 +143,7 @@ class CoupanaApplyView(LoginRequiredMixin, View):
             try:
                 coupan = Coupan.objects.get(code__exact = code, valid_from__lte = now, valid_to__gte = now, active = True)
             except Coupan.DoesNotExist:
-                messages.error(request, 'this coupan does not exist')
+                messages.error(request, 'this coupan does not exist', 'danger')
                 return redirect('orders:order_detail', order_id)
             order = Order.objects.get(id = order_id)
             order.discount = coupan.discount
