@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     #third party apps
     'storages',
     'django_celery_beat',
+
     
 ]
 
